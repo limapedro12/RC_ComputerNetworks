@@ -1,0 +1,11 @@
+No tux 2,3,4 configurar o DNS com o servidor services.netlab.fe.up.pt (172.16.1.1)
+
+Alterar o ficheiro /etc/resolv.conf
+ -limpar
+ -escrever "nameserver 172.16.1.1"
+
+Em cada tux, "ping google.com" funciona.
+No wireshark, podemos ver que há uma comunicação inicial
+com o servidor DNS, que contém o IP de google.com.
+Esse IP é cacheado, pelo que, posteriormente, o pingue-pongue
+entre a máquina e o google continua sem recorrer ao DNS.

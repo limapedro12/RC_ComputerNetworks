@@ -1,0 +1,86 @@
+treminal normal no tux54:
+systemctl restart networking
+ifconfing eth0 up
+ifconfing eth1 up
+ifconfig eth0 172.16.50.254/24
+ifconfig eth1 172.16.50.253/24
+
+Consola switch:
+/interface bridge add name=bridge50
+/interface bridge add name=bridge51
+/interface bridge port remove [find interface =ether2] -- tux52 eth0
+/interface bridge port remove [find interface =ether3] -- tux53 eth0
+/interface bridge port remove [find interface =ether4] -- tux54 eth0
+/interface bridge port remove [find interface =ether10] -- tux54 eth1
+/interface bridge port print -- para verificar
+
+/interface brigde port add bridge=bridge50 interface=ether3
+/interface brigde port add bridge=bridge50 interface=ether4
+/interface brigde port add bridge=bridge51 interface=ether2
+/interface brigde port add bridge=bridge51 interface=ether10
+
+Terminal normal:
+-- Enable IP forwarding
+sysctl net.ipv4.ip_forward=1
+
+-- Disable ICMP echo ignore broadcast
+sysctl net.ipv4.icmp_echo_ignore_broadcasts=0
+
+ifconfig
+tux54.eth0:
+	ip: 172.16.50.254
+	mac: 00:21:5a:c3:78:70
+tux54.eth1:
+	ip: 172.16.51.253
+	mac: 00:c0:df:08:d5:b0
+
+Configurar tux52:
+Terminal:
+ifconfig eth0 up
+ifconfig eth0 172.16.51.1/24
+route add -net 172.16.50.0/24 gw 172.16.51.253
+
+Configurar tux53:
+Terminal:
+ifconfig eth0 up
+ifconfig eth0 172.16.50.1/24
+route add -net 17.16.51.0/24 gw 172.16.50.254
+
+No tux52:
+route -n
+
+No tux53:
+route -n
+
+No tux54:
+route -n
+
+No tux53:
+Abrir Wireshark
+ping 172.16.50.254
+ping 172.16.51.253
+ping 172.16.51.1
+ver document log
+
+tux 52:
+arp -a -- e ja tava vazio
+
+tux53:
+arp -a -- tinhamos um
+arp -d 172.16.50.254
+
+tux54:
+arp -a
+arp -d 172.16.51.1
+arp -d 172.16.50.1
+
+Abrir 2 wireshark no tux54, uma para cada
+
+tux53:
+ping 172.16.51.1
+
+ver 2 documentos de logs do wireshark
+
+
+
+
